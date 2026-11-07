@@ -1,4 +1,4 @@
-const connectToMongo =require('./db');
+const connectToMongo =require('./routes/db');
 const express = require('express')
 var cors = require('cors')
 const app = express()
@@ -17,8 +17,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("welcome to my server");
 });
-app.use('/api/auth',require('./auth'))
-app.use('/api/Notes',require('./notes'))
+app.use('/api/auth',require('./routes/auth'))
+app.use('/api/Notes',require('./routes/notes'))
 
 const startServer = async () => {
   try {
