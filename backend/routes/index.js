@@ -17,8 +17,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("welcome to my server");
 });
-app.use('/api/auth',require('./routes/auth'))
-app.use('/api/Notes',require('./routes/Notes'))
+app.use('/api/auth',require('./auth'))
+app.use('/api/Notes',require('./notes'))
 
 const startServer = async () => {
   try {
