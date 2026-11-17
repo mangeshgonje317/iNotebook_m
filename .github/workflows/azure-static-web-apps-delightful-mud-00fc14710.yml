@@ -24,9 +24,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          lfs: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,12 +32,12 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies
-        working-directory: ./frontend
+      - name: Install Frontend Dependencies
+        working-directory: frontend
         run: npm ci
 
       - name: Build React Application
-        working-directory: ./frontend
+        working-directory: frontend
         env:
           REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
         run: npm run build
@@ -51,7 +48,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DELIGHTFUL_MUD_00FC14710 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          app_location: './frontend/build'
+          app_location: frontend/build
           api_location: ''
           output_location: ''
           skip_app_build: true
