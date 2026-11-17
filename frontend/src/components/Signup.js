@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+import API_BASE_URL from '../api';
 
 function Signup(props) {
   const [credentials, setCredentials] = useState({
