@@ -1,3 +1,4 @@
+
 name: Azure Static Web Apps CI/CD
 
 on:
@@ -12,6 +13,7 @@ on:
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+
     runs-on: ubuntu-latest
     name: Build and Deploy Job
 
@@ -20,31 +22,47 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
 
-      - name: Build And Deploy
-        id: builddeploy
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build React Application
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Deploy to Azure
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DELIGHTFUL_MUD_00FC14710 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "./frontend"
-          api_location: ""
-          output_location: "dist"
+          action: upload
+          app_location: './frontend/dist'
+          api_location: ''
+          output_location: ''
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
+
     runs-on: ubuntu-latest
     name: Close Pull Request Job
 
     steps:
       - name: Close Pull Request
-        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_DELIGHTFUL_MUD_00FC14710 }}
-          action: "close"
+          action: close
