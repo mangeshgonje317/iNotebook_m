@@ -1,12 +1,13 @@
+
 import React from "react";
 import Notes from "./Notes";
-import Alert from "./Alert";
 
 const Home = (props) => {
- const {showAlert}=props
+  const { showAlert } = props;
+
   return (
     <div>
-      <Notes showAlert ={showAlert} />
+      <Notes showAlert={showAlert} />
     </div>
   );
 };

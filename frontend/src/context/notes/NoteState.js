@@ -1,117 +1,86 @@
+
 import { useState } from "react";
 import NoteCotext from "./noteContext";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const NoteState = (props) => {
-  let note=[];
+  const [notes, setNotes] = useState([]);
 
-  const [notes, setNotes] = useState(note);
-
-
-  // get all the notes
-const getNotes =async () => {
-    // todo api csll
-    const response =await fetch(`${API_BASE_URL}/api/notes/fetchallnotes`,{
-        method: 'get',
-        headers: {
+  // Get all notes
+  const getNotes = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/notes/fetchallnotes`, {
+      method: 'GET',
+      headers: {
         'Content-Type': 'application/json',
-        "auth-token":localStorage.getItem('token')
-        
-        },
-        
-        
-      });
-      const json =await response.json()
-      setNotes(json)
-     
-      
+        "auth-token": localStorage.getItem('token')
+      }
+    });
 
-    
+    const json = await response.json();
+    setNotes(json);
   };
 
-
-
-
-
-
-  // till here get note
-  // Add note  
-  const addNote =async (title, description, tag) => {
-    // todo api csll
-    const response =await fetch(`${API_BASE_URL}/api/notes/addnote`,{
-        method: 'post',
-        headers: {
+  // Add note
+  const addNote = async (title, description, tag) => {
+    const response = await fetch(`${API_BASE_URL}/api/notes/addnote`, {
+      method: 'POST',
+      headers: {
         'Content-Type': 'application/json',
-        "auth-token":localStorage.getItem('token')
-        },
-        body :JSON.stringify({title,description,tag})
-      });
-      const note =await response.json();
-      setNotes(notes.concat(note));
-   
+        "auth-token": localStorage.getItem('token')
+      },
+      body: JSON.stringify({ title, description, tag })
+    });
 
-    // still here api call
-   
-
-
-    
+    const note = await response.json();
+    setNotes((prevNotes) => prevNotes.concat(note));
   };
 
-  //  Delete a note
-  const deleteNote =async (id) => {
-    // todo api call
-        const response =await fetch(`${API_BASE_URL}/api/notes/deletenote/${id}` ,{
-        method: 'DELETE',
-        headers: {
+  // Delete note
+  const deleteNote = async (id) => {
+    await fetch(`${API_BASE_URL}/api/notes/deletenote/${id}`, {
+      method: 'DELETE',
+      headers: {
         'Content-Type': 'application/json',
-        "auth-token":localStorage.getItem('token')
-        },
-        
-        
-      });
-      const json =await response.json()
-  
+        "auth-token": localStorage.getItem('token')
+      }
+    });
 
-
-    // till here delete api
-   
-    const newNotes = notes.filter((note)=>{ return note._id!==id});
+    const newNotes = notes.filter((note) => note._id !== id);
     setNotes(newNotes);
   };
 
-  // edit a note
-  const editNote =async (id ,title,description,tag) => {
-    // todo api call
-    // url =
-      const response =await fetch(`${API_BASE_URL}/api/notes/updatenote/${id}` ,{
-        method: 'PUT',
-        headers: {
+  // Edit note
+  const editNote = async (id, title, description, tag) => {
+    await fetch(`${API_BASE_URL}/api/notes/updatenote/${id}`, {
+      method: 'PUT',
+      headers: {
         'Content-Type': 'application/json',
-        "auth-token":localStorage.getItem('token')
-        },
-        body :JSON.stringify({title,description,tag})
-      });
-      const json =await response.json();
+        "auth-token": localStorage.getItem('token')
+      },
+      body: JSON.stringify({ title, description, tag })
+    });
 
+    const newNotes = JSON.parse(JSON.stringify(notes));
 
-      let newNotes =JSON.parse(JSON.stringify(notes))
-
-    // logic to edit in clint
     for (let index = 0; index < newNotes.length; index++) {
       const element = newNotes[index];
-      if (element._id ===id) {
-        newNotes[index].title=title;
-        newNotes[index].description =description;
-        newNotes[index].tag= tag;
+
+      if (element._id === id) {
+        newNotes[index].title = title;
+        newNotes[index].description = description;
+        newNotes[index].tag = tag;
         break;
       }
     }
+
     setNotes(newNotes);
   };
 
   return (
-    <NoteCotext.Provider value={{ notes, addNote, deleteNote, editNote ,getNotes }}>
+    <NoteCotext.Provider
+      value={{ notes, addNote, deleteNote, editNote, getNotes }}
+    >
       {props.children}
     </NoteCotext.Provider>
   );
