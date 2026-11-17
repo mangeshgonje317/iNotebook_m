@@ -1,9 +1,8 @@
 
 import { useState } from "react";
 import NoteCotext from "./noteContext";
-
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
+ 
 const NoteState = (props) => {
   const [notes, setNotes] = useState([]);
 
